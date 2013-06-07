@@ -142,6 +142,27 @@ define varnish::instance($address=[":80"],
     },
   }
 
+  file { 
+    "/etc/init.d/varnishncsa-${instance}":
+      ensure  => present,
+      mode    => 0755,
+      owner   => "root",
+      group   => "root",
+      content => $::operatingsystem ? {
+        /Debian|Ubuntu|kFreeBSD/        => template("varnish/varnishncsa.debian.erb"),
+        /RedHat|Fedora|CentOS|Amazon/   => template("varnish/varnishncsa.redhat.erb"),
+      },
+  }
+
+  case $::operatingsystem  {
+    /Debian|Ubuntu|kFreeBSD/ : {
+      file { "/etc/defaults/varnishncsa-${instance}" :
+        ensure  => present,
+        content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n";        
+      }
+    }
+  }
+
   service { "varnish-${instance}":
     enable  => true,
     ensure  => running,
@@ -161,7 +182,27 @@ define varnish::instance($address=[":80"],
     ],
   }
 
+  service { "varnishncsa-${instance}":
+    enable    => true,
+    ensure    => running,
+    pattern   => "/var/run/varnishncsa-${instance}.pid",
+    hasstatus => false,
+    require   => [
+      File["/etc/init.d/varnishncsa-${instance}"],
+      Service["varnish-${instance}"],
+    ],
+  }
+
   if ($varnishlog == true ) {
+    
+    case $::operatingsystem  {
+      /Debian|Ubuntu|kFreeBSD/ : {
+        file { "/etc/defaults/varnishlog-${instance}" :
+          ensure  => present,
+          content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n";        
+        }
+      }
+    }
 
     service { "varnishlog-${instance}":
       enable    => true,

@@ -156,9 +156,9 @@ define varnish::instance($address=[":80"],
 
   case $::operatingsystem  {
     /Debian|Ubuntu|kFreeBSD/ : {
-      file { "/etc/defaults/varnishncsa-${instance}" :
+      file { "/etc/default/varnishncsa-${instance}" :
         ensure  => present,
-        content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n";        
+        content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n",        
       }
     }
   }
@@ -197,9 +197,9 @@ define varnish::instance($address=[":80"],
     
     case $::operatingsystem  {
       /Debian|Ubuntu|kFreeBSD/ : {
-        file { "/etc/defaults/varnishlog-${instance}" :
+        file { "/etc/default/varnishlog-${instance}" :
           ensure  => present,
-          content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n";        
+          content => "#Managed byPuppeet\nVARNISHLOG_ENABLED=1\n",        
         }
       }
     }

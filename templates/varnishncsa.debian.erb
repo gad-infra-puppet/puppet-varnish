@@ -21,7 +21,6 @@ PIDFILE=/var/run/$NAME-<%= instance %>.pid
 LOGFILE=/var/log/varnish/varnishncsa-<%= instance %>.log
 LOG_FORMAT="%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" %{VCL_Log:extra}x" 
 
-
 # Include defaults if available
 if [ -f /etc/default/$NAME-<%= instance %> ] ; then
   . /etc/default/$NAME-<%= instance %>

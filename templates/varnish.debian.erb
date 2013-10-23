@@ -42,7 +42,7 @@ DAEMON_OPTS=${DAEMON_OPTS:--b localhost}
 
 case "$1" in
 	start)
-		output=$(/bin/tempfile -s.varnish)
+		output=$(/bin/tempfile -s.varnish-<%= instance %>)
 		log_daemon_msg "Starting $DESC" 
 		log_progress_msg $NAME
                 if start-stop-daemon \

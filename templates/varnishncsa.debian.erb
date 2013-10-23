@@ -35,11 +35,11 @@ fi
 
 test -x $DAEMON || exit 0
 
-DAEMON_OPTS="-a -c -w ${LOGFILE} -D -P $PIDFILE -F '${LOG_FORMAT}' -n <%= instance %>"
+DAEMON_OPTS="-a -n <%= instance %> -w ${LOGFILE} -D -P $PIDFILE"
 
 case "$1" in
 	start)
-		output=$(/bin/tempfile -s.varnish)
+		output=$(/bin/tempfile -s.varnishncsa-<%= instance %>)
 		log_daemon_msg "Starting $DESC" 
 		log_progress_msg $NAME
                 if start-stop-daemon \

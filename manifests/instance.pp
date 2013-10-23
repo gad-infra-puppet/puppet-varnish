@@ -89,7 +89,7 @@ define varnish::instance($address=[":80"],
   # All the startup options are defined in /etc/{default,sysconfig}/varnish-nnn
   file { "varnish-${instance} startup config":
     ensure  => present,
-    content => template("varnish/varnish.erb"),
+    content => template("varnish/varnish_conf.erb"),
     name    => $::operatingsystem ? {
       /Debian|Ubuntu|kFreeBSD/        => "/etc/default/varnish-${instance}",
       /RedHat|Fedora|CentOS|Amazon/   => "/etc/sysconfig/varnish-${instance}",

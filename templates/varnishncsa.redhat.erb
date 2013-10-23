@@ -26,8 +26,9 @@ logfile="/var/log/varnish/varnishncsa.log"
 
 exec="/usr/bin/varnishncsa"
 prog="varnishncsa"
+LOG_FORMAT="%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\" %{VCL_Log:extra}x" 
 
-DAEMON_OPTS="-a -w $logfile -D -P $pidfile"
+DAEMON_OPTS="-a -w $logfile -D -P $pidfile -F '${LOG_FORMAT}'"
 
 # Include defaults
 [ -e /etc/sysconfig/varnishncsa ] && . /etc/sysconfig/varnishncsa

@@ -81,7 +81,8 @@ define varnish::instance($address=[":80"],
                          $nfiles="131072",
                          $memlock="82000",
                          $corelimit="0",
-                         $varnishlog=true) {
+                         $varnishlog=true,
+                         $varnishncsa=true) {
 
   # use a more comprehensive attribute name for ERB templates.
   $instance = $name
@@ -154,15 +155,6 @@ define varnish::instance($address=[":80"],
       },
   }
 
-  case $::operatingsystem  {
-    /Debian|Ubuntu|kFreeBSD/ : {
-      file { "/etc/default/varnishncsa-${instance}" :
-        ensure  => present,
-        content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n",        
-      }
-    }
-  }
-
   service { "varnish-${instance}":
     enable  => true,
     ensure  => running,
@@ -182,15 +174,26 @@ define varnish::instance($address=[":80"],
     ],
   }
 
-  service { "varnishncsa-${instance}":
-    enable    => true,
-    ensure    => running,
-    pattern   => "/var/run/varnishncsa-${instance}.pid",
-    hasstatus => false,
-    require   => [
-      File["/etc/init.d/varnishncsa-${instance}"],
-      Service["varnish-${instance}"],
-    ],
+  if ($varnishncsa == true) {
+    case $::operatingsystem  {
+      /Debian|Ubuntu|kFreeBSD/ : {
+        file { "/etc/default/varnishncsa-${instance}" :
+          ensure  => present,
+          content => "#Managed byPuppeet\nVARNISHNCSA_ENABLED=1\n",        
+        }
+      }
+    }
+
+    service { "varnishncsa-${instance}":
+      enable    => true,
+      ensure    => running,
+      pattern   => "/var/run/varnishncsa-${instance}.pid",
+      hasstatus => false,
+      require   => [
+        File["/etc/init.d/varnishncsa-${instance}"],
+        Service["varnish-${instance}"],
+      ],
+    }    
   }
 
   if ($varnishlog == true ) {

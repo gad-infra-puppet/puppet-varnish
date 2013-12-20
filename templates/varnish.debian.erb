@@ -70,7 +70,7 @@ case "$1" in
 	reload)
 		log_daemon_msg "Reloading $DESC"
 		log_progress_msg $NAME
-		if /usr/share/varnish/reload-vcl -q; then
+		if /usr/local/sbin/vcl-reload.sh /etc/varnish/<%= instance %>.vcl -q; then
 			log_end_msg 0
 		else
 			log_end_msg 1
